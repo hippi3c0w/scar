@@ -1,0 +1,68 @@
+#!/bin/bash
+#############################################
+#											#
+#   Scar is a script to obtain info         #
+#   about a banned attacker and know        #
+#   what kind of services the attacker is   #
+#   is running								#
+#   										#
+#	Made by: Manu Alén-@hippi3c0w           #
+#   manualen@protonmail.com                 #
+#   Version: 1.0                            #
+#############################################
+
+##Style
+cat /var/partera/pretty/scar/style
+
+echo " "
+echo "
+==================================
+Made by: Manu Alén-@hippi3c0w
+manualen@protonmail.com
+Version: 1.0
+=================================="
+echo " "
+
+#####################
+#    Color Vars     #
+#####################
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+ORANGE='\033[0;33m'
+PURPLE='\033[0;34m'
+CYAN='\033[0;35m'
+LIGHTGRAY='\033[0;36m'
+NC='\033[0m'
+DARKGRAY='\033[1;30m'
+LIGHTRED='\033[1;31m'
+LIGHTGREEN='\033[1;32m'
+LIGHTORANGE='\033[1;33m'
+LIGHTPURPLE='\033[1;34m'
+LIGHTCYAN='\033[1;35m'
+#####################
+#        VARS	    #
+#####################
+bannedIps=`tail  /var/log/fail2ban.log | grep  "Ban" | awk {'print $7":"$8'} | cut -d ":" -f2`
+
+
+
+######################
+#    Code logic      #
+######################
+		for idiots in $bannedIps
+		do
+			countryAttacker=`curl -s ipinfo.io/$idiots| grep "country" | cut -d ":" -f2 | cut -d "," -f1 | cut -d '"' -f2`
+			regionAttacker=`curl -s ipinfo.io/$idiots| grep "region" | cut -d ":" -f2 | cut -d "," -f1 | cut -d '"' -f2`
+			getCountry=`cat country.list | grep $countryAttacker| cut -d ":" -f2`
+			echo -e "${RED}Banned${NC} Attacker: " $idiots
+			sleep 2
+			echo -e "${GREEN}Country${NC} Attacker: $getCountry ($regionAttacker)"
+			sleep 2
+			echo " "
+			echo "Info about attacker"
+			echo "======================================"
+			echo " "
+			sleep 2
+			ssh -J malen@146.185.153.167  malen@107.170.143.174 "nmap -sV -Pn $idiots"
+		done
