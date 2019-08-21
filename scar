@@ -64,5 +64,5 @@ bannedIps=`tail  /var/log/fail2ban.log | grep  "Ban" | awk {'print $7":"$8'} | c
 			echo "======================================"
 			echo " "
 			sleep 2
-			ssh -J malen@146.185.153.167  malen@107.170.143.174 "nmap -sV -Pn $idiots"
+			ssh -J m[user]@[ip]  [user]@[ip] "nmap -sV -Pn $idiots"
 		done
